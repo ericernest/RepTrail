@@ -27,7 +27,7 @@ button{cursor:pointer}
 .meta{font-size:13px;color:var(--muted);line-height:1.45}
 .last{font-size:12px;color:var(--muted);margin-top:4px}
 .frames{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:12px 0;background:#f2f2ef;padding:5px;border-radius:14px}
-.frames img{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:white;border-radius:10px}
+.frames img{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:#242424;border-radius:10px}
 .cue{font-size:14px;line-height:1.55;margin:8px 0 12px}
 .inputs{display:grid;grid-template-columns:1.1fr repeat(3,1fr) .8fr;gap:6px;align-items:end}
 .field label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px 2px}
