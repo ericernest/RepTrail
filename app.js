@@ -288,7 +288,7 @@
   $('#metricDate').value = today();
   $('#metricForm').addEventListener('submit', e => {
     e.preventDefault();
-    const date = $('#metricDate').value || today();
+    const date = today();
     const weightRaw = $('#metricWeight').value;
     const waistRaw = $('#metricWaist').value;
     const metric = {
