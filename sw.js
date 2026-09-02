@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'reptrail-pwa-v3';
+const CACHE = 'reptrail-pwa-v4';
 const SHELL = [
   './',
   './index.html',

@@ -115,7 +115,7 @@
 
   function renderDay(){
     const day = window.WORKOUT_DATA[currentDay];
-    $('#daySummary').innerHTML = `<h2>${day.title}</h2><p>${day.subtitle} · 约 55–65 分钟</p>`;
+    $('#daySummary').innerHTML = `<h2>${day.title}</h2><p>${day.subtitle} · 约 ${day.durationText || '55–65 分钟'}</p>`;
     const list = $('#exerciseList');
     list.innerHTML = '';
 
@@ -318,6 +318,12 @@
     if (id === 'historyPanel') renderHistory();
     if (id === 'dataPanel') renderMetrics();
     window.scrollTo({top:0, behavior:'smooth'});
+  }));
+
+  $$('.guide-tabs button').forEach(btn => btn.addEventListener('click', () => {
+    const id = btn.dataset.guide;
+    $$('.guide-tabs button').forEach(b => b.classList.toggle('active', b === btn));
+    $$('.guide-content').forEach(card => card.classList.toggle('active', card.id === id));
   }));
 
   $('#exportBtn').addEventListener('click', () => {

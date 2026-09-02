@@ -245,5 +245,28 @@ window.WORKOUT_DATA = {
         "cue": "腿很疲劳时优先降低坡度，不要硬撑。"
       }
     ]
+  },
+  "day4": {
+    "title": "Day 4｜恢复有氧",
+    "subtitle": "坡度走 / 椭圆机 / 自行车 + 拉伸 / 活动",
+    "durationText": "35–50 分钟",
+    "exercises": [
+      {
+        "id": "recovery-cardio",
+        "name": "坡度走 / 椭圆机 / 自行车",
+        "type": "cardio",
+        "target": "中低强度，可正常聊天",
+        "duration": "30–40 min",
+        "cue": "选择一种器械，保持中低强度；能正常聊天，不需要冲刺。"
+      },
+      {
+        "id": "recovery-mobility",
+        "name": "拉伸 / 活动",
+        "type": "cardio",
+        "target": "胸、髋、腿后侧",
+        "duration": "5–10 min",
+        "cue": "选择胸部、髋部和腿后侧的轻柔拉伸或活动练习，不要拉到疼痛。"
+      }
+    ]
   }
 };
