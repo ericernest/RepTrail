@@ -326,6 +326,22 @@
     $$('.guide-content').forEach(card => card.classList.toggle('active', card.id === id));
   }));
 
+  const guideSidebar = $('#guideSidebar');
+  const guideOverlay = $('#guideOverlay');
+  const guideMenuBtn = $('#guideMenuBtn');
+  const closeGuide = () => {
+    guideSidebar.classList.remove('open');
+    guideOverlay.hidden = true;
+    guideMenuBtn.setAttribute('aria-expanded', 'false');
+  };
+  guideMenuBtn.addEventListener('click', () => {
+    guideSidebar.classList.add('open');
+    guideOverlay.hidden = false;
+    guideMenuBtn.setAttribute('aria-expanded', 'true');
+  });
+  $('#guideCloseBtn').addEventListener('click', closeGuide);
+  guideOverlay.addEventListener('click', closeGuide);
+
   $('#exportBtn').addEventListener('click', () => {
     const payload = JSON.stringify({version:1, exportedAt:new Date().toISOString(), ...state}, null, 2);
     const blob = new Blob([payload], {type:'application/json'});

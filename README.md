@@ -22,18 +22,13 @@
 
 ## GitHub Pages 部署
 
-1. 在 GitHub 新建一个公共仓库，例如 `my-workout`。
-2. 把本目录**所有文件和文件夹**上传到仓库根目录。
-3. 打开仓库 `Settings` → `Pages`。
-4. `Build and deployment` 选择：
-   - Source：`Deploy from a branch`
-   - Branch：`main`
-   - Folder：`/(root)`
-5. 保存。
-6. 页面发布后，地址通常是：
-   `https://你的GitHub用户名.github.io/my-workout/`
+1. 在 GitHub 新建仓库 `RepTrail`。仓库可以设为 private，但 GitHub Pages 对私有仓库的可用性取决于账号套餐和组织策略。
+2. 推送本目录所有文件和文件夹到 `main` 分支。
+3. 打开仓库 `Settings` → `Pages`，将 Source 设为 `GitHub Actions`。
+4. 页面发布后，地址通常是：
+   `https://你的GitHub用户名.github.io/RepTrail/`
 
-本项目全部使用相对路径，因此放在 GitHub Pages 的项目子路径下也能正常工作。
+仓库中的 `.github/workflows/pages.yml` 会自动发布根目录静态文件；项目全部使用相对路径，因此放在 GitHub Pages 的项目子路径下也能正常工作。
 
 ## Android 安装
 

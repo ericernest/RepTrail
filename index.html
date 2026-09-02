@@ -14,6 +14,38 @@
   <title>训练计划</title>
 </head>
 <body>
+  <button id="guideMenuBtn" class="guide-menu-btn" aria-label="打开训练指南" aria-expanded="false">☰<span>指南</span></button>
+  <div id="guideOverlay" class="guide-overlay" hidden></div>
+  <aside id="guideSidebar" class="guide-sidebar" aria-label="训练指南">
+    <div class="guide-sidebar-head"><div><span class="eyebrow">REPTRAIL</span><h2>训练指南</h2></div><button id="guideCloseBtn" class="guide-close" aria-label="关闭训练指南">×</button></div>
+    <nav class="guide-tabs" aria-label="训练指南分类">
+      <button class="active" data-guide="weightGuide"><span>01</span>重量怎么调整</button>
+      <button data-guide="cutGuide"><span>02</span>减脂期必要条件</button>
+      <button data-guide="resultGuide"><span>03</span>多久看到效果</button>
+    </nav>
+    <article id="weightGuide" class="guide-content active">
+      <h3>重量怎么调整</h3>
+      <p>先保证动作标准，再追求重量。每个动作按三组记录次数和最后一组 RIR。</p>
+      <div class="guide-rule"><strong>达不到最低次数</strong><span>下次降重约 10%–20%。</span></div>
+      <div class="guide-rule"><strong>完成目标次数，RIR 1–2</strong><span>下次保持重量，先把次数做稳。</span></div>
+      <div class="guide-rule"><strong>所有组达到上限，RIR ≥ 3</strong><span>杠铃增加 2.5–5 kg；哑铃每手增加 1–2 kg；器械增加约 5 kg。</span></div>
+      <p class="guide-note">前 2–4 周不需要测试极限，也不必每组练到力竭。</p>
+    </article>
+    <article id="cutGuide" class="guide-content">
+      <h3>减脂期几个必要条件</h3>
+      <div class="guide-rule"><strong>温和热量缺口</strong><span>每天约少 300–500 kcal，避免过度节食。</span></div>
+      <div class="guide-rule"><strong>蛋白质足够</strong><span>当前计划以每天约 130 g 作为起点，再按体重变化调整。</span></div>
+      <div class="guide-rule"><strong>保持训练和日常活动</strong><span>继续力量训练，增加走路，不只依赖有氧。</span></div>
+      <div class="guide-rule"><strong>睡眠和记录</strong><span>保证稳定睡眠；每周看平均体重、腰围、训练重量和次数。</span></div>
+    </article>
+    <article id="resultGuide" class="guide-content">
+      <h3>大概多久看到效果</h3>
+      <div class="guide-rule"><strong>1–2 周</strong><span>先感受到训练节奏、动作熟练度和体重波动变化。</span></div>
+      <div class="guide-rule"><strong>3–6 周</strong><span>力量、训练容量和腰围通常开始出现更稳定的趋势。</span></div>
+      <div class="guide-rule"><strong>8–12 周</strong><span>在饮食、训练和睡眠稳定的前提下，体型变化更容易被自己和他人观察到。</span></div>
+      <p class="guide-note">不要只看单日体重；用 7 天平均值和每周固定条件的腰围判断效果。</p>
+    </article>
+  </aside>
   <main class="app">
     <header class="topbar">
       <div>
@@ -81,43 +113,12 @@
       </div>
     </section>
 
-    <section id="guidePanel" class="panel">
-      <h2 class="section-title">训练指南</h2>
-      <nav class="guide-tabs" aria-label="训练指南分类">
-        <button class="active" data-guide="weightGuide">重量调整</button>
-        <button data-guide="cutGuide">减脂条件</button>
-        <button data-guide="resultGuide">多久见效</button>
-      </nav>
-      <article id="weightGuide" class="guide-card guide-content active">
-        <h3>重量怎么调整</h3>
-        <p>先保证动作标准，再追求重量。每个动作按三组记录次数和最后一组 RIR。</p>
-        <div class="guide-rule"><strong>达不到最低次数</strong><span>下次降重约 10%–20%。</span></div>
-        <div class="guide-rule"><strong>完成目标次数，RIR 1–2</strong><span>下次保持重量，先把次数做稳。</span></div>
-        <div class="guide-rule"><strong>所有组达到上限，RIR ≥ 3</strong><span>杠铃增加 2.5–5 kg；哑铃每手增加 1–2 kg；器械增加约 5 kg。</span></div>
-        <p class="guide-note">前 2–4 周不需要测试极限，也不必每组练到力竭。</p>
-      </article>
-      <article id="cutGuide" class="guide-card guide-content">
-        <h3>减脂期几个必要条件</h3>
-        <div class="guide-rule"><strong>温和热量缺口</strong><span>每天约少 300–500 kcal，避免过度节食。</span></div>
-        <div class="guide-rule"><strong>蛋白质足够</strong><span>当前计划以每天约 130 g 作为起点，再按体重变化调整。</span></div>
-        <div class="guide-rule"><strong>保持训练和日常活动</strong><span>继续力量训练，增加走路，不只依赖有氧。</span></div>
-        <div class="guide-rule"><strong>睡眠和记录</strong><span>保证稳定睡眠；每周看平均体重、腰围、训练重量和次数。</span></div>
-      </article>
-      <article id="resultGuide" class="guide-card guide-content">
-        <h3>大概多久看到效果</h3>
-        <div class="guide-rule"><strong>1–2 周</strong><span>先感受到训练节奏、动作熟练度和体重波动变化。</span></div>
-        <div class="guide-rule"><strong>3–6 周</strong><span>力量、训练容量和腰围通常开始出现更稳定的趋势。</span></div>
-        <div class="guide-rule"><strong>8–12 周</strong><span>在饮食、训练和睡眠稳定的前提下，体型变化更容易被自己和他人观察到。</span></div>
-        <p class="guide-note">不要只看单日体重；用 7 天平均值和每周固定条件的腰围判断效果。</p>
-      </article>
-    </section>
   </main>
 
   <nav class="bottom-nav" aria-label="主导航">
     <button class="active" data-panel="trainingPanel">训练</button>
     <button data-panel="historyPanel">历史</button>
     <button data-panel="dataPanel">数据</button>
-    <button data-panel="guidePanel">指南</button>
   </nav>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
