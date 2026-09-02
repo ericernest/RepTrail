@@ -2,7 +2,9 @@
 (() => {
   'use strict';
 
-  const STORE_KEY = 'myWorkoutPwa.v1';
+  const STORE_KEY = 'reptrail.state.v2';
+  const LEGACY_STORE_KEYS = ['myWorkoutPwa.v1'];
+  const storage = getStorage();
   const state = loadState();
   let currentDay = 'day1';
   let deferredInstallPrompt = null;
@@ -23,22 +25,40 @@
     return Number.isFinite(n) ? n : null;
   };
 
+  function getStorage(){
+    try {
+      const testKey = '__reptrail_storage_test__';
+      window.localStorage.setItem(testKey, '1');
+      window.localStorage.removeItem(testKey);
+      return window.localStorage;
+    } catch {
+      return {getItem: () => null, setItem: () => {}, removeItem: () => {}};
+    }
+  }
+
+  function normalizeState(parsed){
+    return {
+      sessions: Array.isArray(parsed?.sessions) ? parsed.sessions.filter(Boolean) : [],
+      metrics: Array.isArray(parsed?.metrics) ? parsed.metrics.filter(Boolean) : []
+    };
+  }
+
   function loadState(){
     try {
-      const raw = localStorage.getItem(STORE_KEY);
+      const raw = storage.getItem(STORE_KEY) || LEGACY_STORE_KEYS.map(k => storage.getItem(k)).find(Boolean);
       if (!raw) return {sessions:[], metrics:[]};
-      const parsed = JSON.parse(raw);
-      return {
-        sessions: Array.isArray(parsed.sessions) ? parsed.sessions : [],
-        metrics: Array.isArray(parsed.metrics) ? parsed.metrics : []
-      };
+      return normalizeState(JSON.parse(raw));
     } catch {
       return {sessions:[], metrics:[]};
     }
   }
 
   function persist(){
-    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    try {
+      storage.setItem(STORE_KEY, JSON.stringify(state));
+    } catch {
+      toast('本地存储空间不足，请先导出备份');
+    }
   }
 
   function toast(message){
@@ -49,7 +69,7 @@
   }
 
   function frameUrl(slug, i){
-    return `https://cdn.jsdelivr.net/npm/@bryllim/workout-guide@1.0.0/assets/${slug}/frame-${i}.svg`;
+    return `./assets/${slug}/frame-${i}.svg`;
   }
 
   function latestExerciseRecord(exerciseId){
@@ -115,21 +135,21 @@
         const preWeight = last?.weight ?? ex.startWeight;
         controls = `<div class="inputs">
           <div class="field"><label>重量</label><input class="weight" type="number" step="0.5" min="0" value="${preWeight}"></div>
-          ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组</label><input class="rep" data-i="${i}" type="number" min="0" max="100" inputmode="numeric" placeholder="${ex.repMin}"></div>`).join('')}
-          <div class="field rir"><label>最后一组 RIR</label><select class="rir"><option value="">未填</option><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
+          ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组</label><input class="rep" data-i="${i}" type="number" min="0" max="100" inputmode="numeric" placeholder="${ex.repMin}" value="${last?.reps?.[i] ?? ''}"></div>`).join('')}
+          <div class="field rir"><label>最后一组 RIR</label><select class="rir"><option value="">未填</option>${[0,1,2,3,4,5].map(v=>`<option ${last?.rir === v ? 'selected' : (last?.rir == null && v === 2 ? 'selected' : '')}>${v}</option>`).join('')}</select></div>
         </div>`;
       } else if (ex.type === 'bodyweight') {
         controls = `<div class="inputs" style="grid-template-columns:repeat(3,1fr)">
-          ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组</label><input class="rep" data-i="${i}" type="number" min="0" max="100" inputmode="numeric" placeholder="${ex.repMin}"></div>`).join('')}
+          ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组</label><input class="rep" data-i="${i}" type="number" min="0" max="100" inputmode="numeric" placeholder="${ex.repMin}" value="${last?.reps?.[i] ?? ''}"></div>`).join('')}
         </div>`;
       } else if (ex.type === 'duration') {
         controls = `<div class="inputs" style="grid-template-columns:repeat(3,1fr)">
-          ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组 秒</label><input class="duration-set" data-i="${i}" type="number" min="0" max="600" inputmode="numeric" placeholder="${ex.durationMin}"></div>`).join('')}
+          ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组 秒</label><input class="duration-set" data-i="${i}" type="number" min="0" max="600" inputmode="numeric" placeholder="${ex.durationMin}" value="${last?.durations?.[i] ?? ''}"></div>`).join('')}
         </div>`;
       } else {
         controls = `<div class="cardio-row">
-          <div class="field"><label>完成分钟</label><input class="cardio-duration" type="number" min="0" max="180" inputmode="numeric" placeholder="15"></div>
-          <div class="field"><label>强度 / 备注</label><input class="cardio-note" type="text" maxlength="50" placeholder="${ex.target || '中等强度'}"></div>
+          <div class="field"><label>完成分钟</label><input class="cardio-duration" type="number" min="0" max="180" inputmode="numeric" placeholder="15" value="${last?.duration || ''}"></div>
+          <div class="field"><label>强度 / 备注</label><input class="cardio-note" type="text" maxlength="50" placeholder="${ex.target || '中等强度'}" value="${escapeHtml(last?.note || '')}"></div>
         </div>`;
       }
 

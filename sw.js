@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'my-workout-pwa-v2';
+const CACHE = 'reptrail-pwa-v3';
 const SHELL = [
   './',
   './index.html',
@@ -53,7 +53,7 @@ const EXERCISE_IMAGES = [
   "https://cdn.jsdelivr.net/npm/@bryllim/workout-guide@1.0.0/assets/seated-row/frame-1.svg",
   "https://cdn.jsdelivr.net/npm/@bryllim/workout-guide@1.0.0/assets/seated-row/frame-2.svg",
   "https://cdn.jsdelivr.net/npm/@bryllim/workout-guide@1.0.0/assets/seated-row/frame-3.svg"
-];
+].map(url => url.replace('https://cdn.jsdelivr.net/npm/@bryllim/workout-guide@1.0.0/assets/', './assets/'));
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
@@ -81,10 +81,8 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
 
-  if (url.hostname === 'cdn.jsdelivr.net') {
+  if (url.origin === self.location.origin) {
     event.respondWith((async () => {
-      const cached = await caches.match(event.request);
-      if (cached) return cached;
       try {
         const response = await fetch(event.request);
         if (response.ok) {
@@ -93,27 +91,13 @@ self.addEventListener('fetch', event => {
         }
         return response;
       } catch (_) {
-        return new Response('', {status: 503, statusText:'Offline'});
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        if (event.request.mode === 'navigate') return caches.match('./index.html');
+        return new Response('', {status:503, statusText:'Offline'});
       }
     })());
     return;
   }
 
-  if (url.origin === self.location.origin) {
-    event.respondWith((async () => {
-      const cached = await caches.match(event.request);
-      if (cached) return cached;
-      try {
-        const response = await fetch(event.request);
-        if (response.ok) {
-          const cache = await caches.open(CACHE);
-          cache.put(event.request, response.clone());
-        }
-        return response;
-      } catch (_) {
-        if (event.request.mode === 'navigate') return caches.match('./index.html');
-        return new Response('', {status:503, statusText:'Offline'});
-      }
-    })());
-  }
 });
