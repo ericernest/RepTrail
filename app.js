@@ -25,6 +25,17 @@
     return Number.isFinite(n) ? n : null;
   };
 
+  function finiteNumber(value){
+    if (value === null || value === undefined || value === '') return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
+  function displayNumber(value, suffix=''){
+    const number = finiteNumber(value);
+    return number === null ? '—' : `${number}${suffix}`;
+  }
+
   function getStorage(){
     try {
       const testKey = '__reptrail_storage_test__';
@@ -82,17 +93,21 @@
 
   function weightSuggestion(ex, record){
     if (!record || ex.type !== 'weight') return null;
-    const reps = record.reps.filter(Number.isFinite);
+    const reps = (Array.isArray(record.reps) ? record.reps : []).map(finiteNumber).filter(v => v !== null);
     if (reps.length !== ex.sets) return {text:'记录完整后判断', cls:''};
     const min = Math.min(...reps);
     const allTop = reps.every(r => r >= ex.repMax);
     const rir = Number(record.rir);
     if (min < ex.repMin) {
-      const lower = Math.max(0, Math.round(record.weight * 0.9 * 2) / 2);
+      const weight = finiteNumber(record.weight);
+      if (weight === null) return {text:'请先填写重量', cls:'warn'};
+      const lower = Math.max(0, Math.round(weight * 0.9 * 2) / 2);
       return {text:`建议降重至约 ${lower} kg`, cls:'danger'};
     }
     if (allTop && Number.isFinite(rir) && rir >= 3) {
-      const next = Math.round((record.weight + ex.increment) * 2) / 2;
+      const weight = finiteNumber(record.weight);
+      if (weight === null) return {text:'请先填写重量', cls:'warn'};
+      const next = Math.round((weight + ex.increment) * 2) / 2;
       return {text:`下次可试 ${next} kg`, cls:'good'};
     }
     return {text:'下次保持重量', cls:'warn'};
@@ -136,7 +151,7 @@
         controls = `<div class="inputs">
           <div class="field"><label>重量</label><input class="weight" type="number" step="0.5" min="0" value="${preWeight}"></div>
           ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组</label><input class="rep" data-i="${i}" type="number" min="0" max="100" inputmode="numeric" placeholder="${ex.repMin}" value="${last?.reps?.[i] ?? ''}"></div>`).join('')}
-          <div class="field rir"><label>最后一组 RIR</label><select class="rir"><option value="">未填</option>${[0,1,2,3,4,5].map(v=>`<option ${last?.rir === v ? 'selected' : (last?.rir == null && v === 2 ? 'selected' : '')}>${v}</option>`).join('')}</select></div>
+          <div class="field rir"><label>最后一组 RIR</label><select class="rir"><option value="">未填</option>${[0,1,2,3,4,5].map(v=>`<option ${last?.rir === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
         </div>`;
       } else if (ex.type === 'bodyweight') {
         controls = `<div class="inputs" style="grid-template-columns:repeat(3,1fr)">
@@ -233,14 +248,18 @@
       return;
     }
     box.innerHTML = [...state.sessions].reverse().slice(0,50).map(s => {
-      const done = s.exercises.filter(e => e.complete).length;
-      const detail = s.exercises.map(e => {
-        if (e.type === 'weight') return `${e.name} ${e.weight ?? '—'}kg ${e.reps?.join('/') || '—'} RIR${e.rir ?? '—'}`;
-        if (e.type === 'bodyweight') return `${e.name} ${e.reps?.join('/') || '—'}`;
-        if (e.type === 'duration') return `${e.name} ${e.durations?.join('/') || '—'}秒`;
-        return `${e.name} ${e.duration || 0}min`;
-      }).join('；');
-      return `<article class="history-item"><h3>${s.date} · ${s.dayTitle}</h3><p>完成 ${done}/${s.exercises.length} 项</p><p>${detail}</p></article>`;
+      const exercises = Array.isArray(s.exercises) ? s.exercises : [];
+      const done = exercises.filter(e => e?.complete).length;
+      const detail = exercises.map(e => {
+        const reps = Array.isArray(e?.reps) ? e.reps.map(v => displayNumber(v)).join(' / ') : '—';
+        let value = '—';
+        if (e?.type === 'weight') value = `${displayNumber(e.weight, ' kg')} · ${reps} · RIR ${displayNumber(e.rir)}`;
+        else if (e?.type === 'bodyweight') value = reps;
+        else if (e?.type === 'duration') value = `${Array.isArray(e.durations) ? e.durations.map(v => displayNumber(v)).join(' / ') : '—'} 秒`;
+        else value = `${displayNumber(e?.duration)} min${e?.note ? ` · ${escapeHtml(e.note)}` : ''}`;
+        return `<div class="history-row"><div><strong>${escapeHtml(e?.name || '未命名动作')}</strong><span>${value}</span></div><em class="history-status ${e?.complete ? 'done' : ''}">${e?.complete ? '完成' : '未完成'}</em></div>`;
+      }).join('');
+      return `<article class="history-item"><div class="history-head"><div><h3>${escapeHtml(s.date || '未知日期')}</h3><p>${escapeHtml(s.dayTitle || '训练记录')}</p></div><span class="history-count">完成 ${done}/${exercises.length}</span></div><div class="history-grid">${detail || '<div class="empty">没有动作明细。</div>'}</div></article>`;
     }).join('');
   }
 
