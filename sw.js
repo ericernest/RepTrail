@@ -3,7 +3,7 @@ const CACHE = 'reptrail-pwa-v4';
 const SHELL = [
   './',
   './index.html',
-  './styles.css',
+  './styles.css?v=9',
   './app.js',
   './workout-data.js',
   './manifest.webmanifest',
