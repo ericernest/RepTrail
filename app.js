@@ -162,13 +162,14 @@
           ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组 秒</label><input class="duration-set" data-i="${i}" type="number" min="0" max="600" inputmode="numeric" placeholder="${ex.durationMin}" value="${last?.durations?.[i] ?? ''}"></div>`).join('')}
         </div>`;
       } else {
-        const intensityOptions = [ex.target, '轻松恢复', '中低强度，可正常聊天', '中等强度', '较高强度']
-          .filter(Boolean)
-          .concat(last?.note && ![ex.target, '轻松恢复', '中低强度，可正常聊天', '中等强度', '较高强度'].includes(last.note) ? [last.note] : [])
-          .filter((value, index, values) => values.indexOf(value) === index);
-        controls = `<div class="cardio-row">
+        const speedOptions = ['不适用', '4.5 km/h', '5.0 km/h', '5.5 km/h', '6.0 km/h'];
+        const inclineOptions = ['不适用', '0%', '3%', '5%', '7%', '10%'];
+        const defaultSpeed = ex.target?.match(/\d+(?:\.\d+)?\s*km\/h/i)?.[0]?.replace(/\s+/g, ' ').trim();
+        const defaultIncline = ex.target?.match(/\d+%/)?.[0];
+        controls = `<div class="cardio-grid">
           <div class="field"><label>完成分钟</label><input class="cardio-duration" type="number" min="0" max="180" inputmode="numeric" placeholder="15" value="${last?.duration || ''}"></div>
-          <div class="field"><label>强度</label><select class="cardio-intensity">${intensityOptions.map(option => `<option ${last?.note === option || (!last?.note && option === ex.target) ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}</select></div>
+          <div class="field"><label>速度</label><select class="cardio-speed">${speedOptions.map(option => `<option ${last?.speed === option || (!last?.speed && option === defaultSpeed) ? 'selected' : ''}>${option}</option>`).join('')}</select></div>
+          <div class="field"><label>坡度</label><select class="cardio-incline">${inclineOptions.map(option => `<option ${last?.incline === option || (!last?.incline && option === defaultIncline) ? 'selected' : ''}>${option}</option>`).join('')}</select></div>
         </div>`;
       }
 
@@ -205,7 +206,8 @@
         record.durations = $$('.duration-set', card).map(inputNumber).filter(v => v !== null);
       } else {
         record.duration = inputNumber($('.cardio-duration', card)) || 0;
-        record.note = $('.cardio-intensity', card)?.value || '';
+        record.speed = $('.cardio-speed', card)?.value || '不适用';
+        record.incline = $('.cardio-incline', card)?.value || '不适用';
       }
       records.push(record);
     });
@@ -260,7 +262,7 @@
         if (e?.type === 'weight') value = `${displayNumber(e.weight, ' kg')} · ${reps} · RIR ${displayNumber(e.rir)}`;
         else if (e?.type === 'bodyweight') value = reps;
         else if (e?.type === 'duration') value = `${Array.isArray(e.durations) ? e.durations.map(v => displayNumber(v)).join(' / ') : '—'} 秒`;
-        else value = `${displayNumber(e?.duration)} min${e?.note ? ` · ${escapeHtml(e.note)}` : ''}`;
+        else value = `${displayNumber(e?.duration)} min · 速度 ${escapeHtml(e?.speed || '—')} · 坡度 ${escapeHtml(e?.incline || '—')}`;
         return `<div class="history-row"><div><strong>${escapeHtml(e?.name || '未命名动作')}</strong><span>${value}</span></div><em class="history-status ${e?.complete ? 'done' : ''}">${e?.complete ? '完成' : '未完成'}</em></div>`;
       }).join('');
       return `<article class="history-item"><div class="history-head"><div><h3>${escapeHtml(s.date || '未知日期')}</h3><p>${escapeHtml(s.dayTitle || '训练记录')}</p></div><span class="history-count">完成 ${done}/${exercises.length}</span></div><div class="history-grid">${detail || '<div class="empty">没有动作明细。</div>'}</div></article>`;
