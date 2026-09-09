@@ -45,7 +45,7 @@ button{cursor:pointer}
 .body-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .body-grid .full{grid-column:1/-1}
 .auto-date-hint{font-size:12px;color:var(--muted);margin-top:8px}
-.cardio-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cardio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .complete-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
 .check{display:flex;align-items:center;gap:8px;font-size:14px}
 .check input{width:20px;height:20px}
@@ -72,6 +72,34 @@ button{cursor:pointer}
 .panel{display:none}
 .panel.active{display:block}
 .history-item,.metric-item{background:#fff;border:1px solid var(--border);border-radius:15px;padding:12px;margin:8px 0}
+.calendar-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:12px;margin:8px 0}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.icon-button{border:0;background:transparent;color:var(--text);font-size:28px;line-height:1;padding:0 8px}
+.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.calendar-weekdays{color:var(--muted);font-size:11px;margin-bottom:4px}
+.calendar-day{position:relative;border:0;background:transparent;min-height:40px;border-radius:10px;color:var(--text);font-size:14px}
+.calendar-day.today{outline:1px solid var(--border)}
+.calendar-day.selected{background:var(--accent);color:#fff}
+.calendar-day .green-dot,.green-dot{display:block;width:5px;height:5px;border-radius:50%;background:#3e9b59;margin:2px auto 0}
+.calendar-day.selected .green-dot{background:#b9efc5}
+.calendar-empty{min-height:40px}
+.calendar-legend{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;margin-top:9px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.stats-caption{grid-column:1/-1;color:var(--muted);font-size:12px;padding:2px}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:9px 7px;text-align:center}
+.stat-card span{display:block;color:var(--muted);font-size:11px;margin-bottom:3px}
+.stat-card strong{font-size:15px}
+.subsection-head{display:flex;align-items:start;justify-content:space-between;gap:8px}
+.subsection-head h3{margin:0;font-size:17px}
+.subsection-head p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.record-actions{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.text-action{border:0;background:transparent;color:var(--text);padding:2px;font-size:12px;font-weight:700}
+.danger-action{color:#a23c3c}
+.plank-record{display:flex;justify-content:space-between;align-items:center}
+.timer-display{text-align:center;font-size:42px;font-variant-numeric:tabular-nums;letter-spacing:.04em;padding:12px 0 14px;font-weight:800}
+.timer-settings{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+.timer-actions{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.timer-actions .primary{width:auto;margin:12px 0}
 .history-head{display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:8px}
 .history-item h3,.metric-item h3{margin:0 0 4px;font-size:16px}
 .history-head p{margin:0;color:var(--muted);font-size:13px}
@@ -101,6 +129,12 @@ button{cursor:pointer}
   .inputs{grid-template-columns:1.05fr repeat(3,.9fr)}
   .inputs .rir{grid-column:1/-1}
   .inputs .rir select{text-align:left}
+  .cardio-grid{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .timer-settings{grid-template-columns:1fr 1fr}
+  .timer-settings button{grid-column:1/-1}
+  .timer-actions{grid-template-columns:1fr 1fr}
+  .timer-actions button:last-child{grid-column:1/-1}
 }
 @media (max-width:899px){
   .topbar{padding-left:64px}

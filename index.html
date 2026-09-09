@@ -10,7 +10,7 @@
   <meta name="description" content="三日健身计划、动作三帧速查与本地训练追踪">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png">
-  <link rel="stylesheet" href="./styles.css?v=9">
+  <link rel="stylesheet" href="./styles.css?v=10">
   <title>训练计划</title>
 </head>
 <body>
@@ -65,6 +65,7 @@
       <div id="daySummary" class="summary"></div>
       <div id="exerciseList"></div>
       <button id="saveWorkout" class="primary">保存本次训练</button>
+      <button id="cancelEditWorkout" class="secondary" type="button" hidden>取消编辑</button>
       <div class="notice">
         <strong>加重规则：</strong>所有组达到次数上限且最后一组 RIR ≥ 3 → 下次加重量；
         达不到最低次数 → 建议降重；其余情况保持。动作标准优先于重量。
@@ -73,7 +74,35 @@
 
     <section id="historyPanel" class="panel">
       <h2 class="section-title">训练历史</h2>
-      <div id="historyList"></div>
+      <div class="calendar-card">
+        <div class="calendar-head">
+          <button id="calendarPrev" class="icon-button" type="button" aria-label="上个月">‹</button>
+          <strong id="calendarTitle"></strong>
+          <button id="calendarNext" class="icon-button" type="button" aria-label="下个月">›</button>
+        </div>
+        <div class="calendar-weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div class="calendar-legend"><span class="green-dot"></span> 有训练记录</div>
+      </div>
+      <div id="historyStats" class="stats-grid"></div>
+      <section class="day-history">
+        <div class="subsection-head"><h3 id="selectedDateTitle">当天训练</h3><span id="selectedDateHint"></span></div>
+        <div id="dayHistoryList"></div>
+      </section>
+      <section class="plank-timer exercise">
+        <div class="subsection-head"><div><h3>平板支撑计时</h3><p>完成后点击“完成并记录”，会写入当天历史。</p></div></div>
+        <div id="plankTimerDisplay" class="timer-display">01:00</div>
+        <div class="timer-settings">
+          <div class="field"><label for="plankMinutes">分钟</label><input id="plankMinutes" type="number" min="0" max="60" value="1"></div>
+          <div class="field"><label for="plankSeconds">秒</label><input id="plankSeconds" type="number" min="0" max="59" value="0"></div>
+          <button id="setPlankTimer" class="secondary" type="button">设置时间</button>
+        </div>
+        <div class="timer-actions">
+          <button id="plankStartPause" class="primary" type="button">开始</button>
+          <button id="plankReset" class="secondary" type="button">重置</button>
+          <button id="plankComplete" class="secondary" type="button">完成并记录</button>
+        </div>
+      </section>
     </section>
 
     <section id="dataPanel" class="panel">

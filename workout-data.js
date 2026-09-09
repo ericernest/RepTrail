@@ -2,6 +2,7 @@ window.WORKOUT_DATA = {
   "day1": {
     "title": "Day 1｜胸部重点",
     "subtitle": "胸 + 背 + 肩 + 腹 + 有氧",
+    "durationMinutes": 60,
     "exercises": [
       {
         "id": "bench-press",
@@ -86,6 +87,7 @@ window.WORKOUT_DATA = {
   "day2": {
     "title": "Day 2｜腿 + 背",
     "subtitle": "腿 + 背 + 腹 + 有氧",
+    "durationMinutes": 60,
     "exercises": [
       {
         "id": "goblet-squat",
@@ -168,6 +170,7 @@ window.WORKOUT_DATA = {
   "day3": {
     "title": "Day 3｜胸部 + 全身",
     "subtitle": "胸 + 腿 + 背 + 腹 + 有氧",
+    "durationMinutes": 60,
     "exercises": [
       {
         "id": "dumbbell-bench-press",
@@ -250,6 +253,7 @@ window.WORKOUT_DATA = {
     "title": "Day 4｜恢复有氧",
     "subtitle": "坡度走 / 椭圆机 / 自行车 + 拉伸 / 活动",
     "durationText": "35–50 分钟",
+    "durationMinutes": 45,
     "exercises": [
       {
         "id": "recovery-cardio",

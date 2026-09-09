@@ -1,9 +1,9 @@
 'use strict';
-const CACHE = 'reptrail-pwa-v4';
+const CACHE = 'reptrail-pwa-v5';
 const SHELL = [
   './',
   './index.html',
-  './styles.css?v=9',
+  './styles.css?v=10',
   './app.js',
   './workout-data.js',
   './manifest.webmanifest',
