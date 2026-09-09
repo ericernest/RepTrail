@@ -17,6 +17,7 @@
   let plankRemainingSeconds = 60;
   let plankTimerId = null;
   let plankRunning = false;
+  let plankEndAt = 0;
 
   const $ = (q, root=document) => root.querySelector(q);
   const $$ = (q, root=document) => [...root.querySelectorAll(q)];
@@ -338,7 +339,7 @@
     $('#plankStartPause').textContent=plankRunning?'暂停':'开始';
     $('#plankComplete').textContent=editingPlankId?'更新记录':'完成并记录';
   }
-  function stopPlankTimer(){ if(plankTimerId){clearInterval(plankTimerId);plankTimerId=null;} plankRunning=false; }
+  function stopPlankTimer(){ if(plankTimerId){clearInterval(plankTimerId);plankTimerId=null;} plankRunning=false; plankEndAt=0; }
   function setPlankTimer(){
     stopPlankTimer();
     const min=Math.max(0,Math.min(60,Number($('#plankMinutes').value)||0));
@@ -351,8 +352,15 @@
   $('#plankStartPause').addEventListener('click',()=>{
     if(plankRunning){stopPlankTimer();renderPlankTimer();return;}
     if(!plankRemainingSeconds){plankRemainingSeconds=plankTotalSeconds;}
-    plankRunning=true; renderPlankTimer();
-    plankTimerId=setInterval(()=>{plankRemainingSeconds=Math.max(0,plankRemainingSeconds-1);if(!plankRemainingSeconds){stopPlankTimer();toast('时间到，可以完成记录');}renderPlankTimer();},1000);
+    plankRunning=true;
+    plankEndAt=Date.now()+plankRemainingSeconds*1000;
+    const tick=()=>{
+      plankRemainingSeconds=Math.max(0,Math.ceil((plankEndAt-Date.now())/1000));
+      if(!plankRemainingSeconds){stopPlankTimer();toast('时间到，可以完成记录');}
+      renderPlankTimer();
+    };
+    renderPlankTimer(); tick();
+    plankTimerId=setInterval(tick,250);
   });
   $('#plankReset').addEventListener('click',()=>{stopPlankTimer();editingPlankId=null;plankRemainingSeconds=plankTotalSeconds;renderPlankTimer();});
   $('#plankComplete').addEventListener('click',()=>{
