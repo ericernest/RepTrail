@@ -97,7 +97,7 @@
     if (reps.length !== ex.sets) return {text:'记录完整后判断', cls:''};
     const min = Math.min(...reps);
     const allTop = reps.every(r => r >= ex.repMax);
-    const rir = Number(record.rir);
+    const rir = finiteNumber(record.rir);
     if (min < ex.repMin) {
       const weight = finiteNumber(record.weight);
       if (weight === null) return {text:'请先填写重量', cls:'warn'};
@@ -139,7 +139,7 @@
 
       let lastLine = '';
       if (last) {
-        if (ex.type === 'weight') lastLine = `上次：${last.weight} kg · ${last.reps.join('/')} · RIR ${last.rir ?? '—'}`;
+        if (ex.type === 'weight') lastLine = `上次：${displayNumber(last.weight, ' kg')} · ${(Array.isArray(last.reps) ? last.reps.map(v => displayNumber(v)).join('/') : '—')} · RIR ${displayNumber(last.rir)}`;
         else if (ex.type === 'duration') lastLine = `上次：${last.durations?.join('/')} 秒`;
         else if (ex.type === 'bodyweight') lastLine = `上次：${last.reps.join('/')}`;
         else lastLine = `上次：${last.duration ?? '—'} min`;
@@ -162,9 +162,13 @@
           ${[0,1,2].map((_,i)=>`<div class="field"><label>第${i+1}组 秒</label><input class="duration-set" data-i="${i}" type="number" min="0" max="600" inputmode="numeric" placeholder="${ex.durationMin}" value="${last?.durations?.[i] ?? ''}"></div>`).join('')}
         </div>`;
       } else {
+        const intensityOptions = [ex.target, '轻松恢复', '中低强度，可正常聊天', '中等强度', '较高强度']
+          .filter(Boolean)
+          .concat(last?.note && ![ex.target, '轻松恢复', '中低强度，可正常聊天', '中等强度', '较高强度'].includes(last.note) ? [last.note] : [])
+          .filter((value, index, values) => values.indexOf(value) === index);
         controls = `<div class="cardio-row">
           <div class="field"><label>完成分钟</label><input class="cardio-duration" type="number" min="0" max="180" inputmode="numeric" placeholder="15" value="${last?.duration || ''}"></div>
-          <div class="field"><label>强度 / 备注</label><input class="cardio-note" type="text" maxlength="50" placeholder="${ex.target || '中等强度'}" value="${escapeHtml(last?.note || '')}"></div>
+          <div class="field"><label>强度</label><select class="cardio-intensity">${intensityOptions.map(option => `<option ${last?.note === option || (!last?.note && option === ex.target) ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}</select></div>
         </div>`;
       }
 
@@ -193,15 +197,15 @@
       if (ex.type === 'weight') {
         record.weight = inputNumber($('.weight', card));
         record.reps = $$('.rep', card).map(inputNumber).filter(v => v !== null);
-        const rirRaw = $('.rir', card).value;
-        record.rir = rirRaw === '' ? null : Number(rirRaw);
+        const rirRaw = $('.field.rir select', card)?.value ?? '';
+        record.rir = rirRaw === '' ? null : finiteNumber(rirRaw);
       } else if (ex.type === 'bodyweight') {
         record.reps = $$('.rep', card).map(inputNumber).filter(v => v !== null);
       } else if (ex.type === 'duration') {
         record.durations = $$('.duration-set', card).map(inputNumber).filter(v => v !== null);
       } else {
         record.duration = inputNumber($('.cardio-duration', card)) || 0;
-        record.note = $('.cardio-note', card).value.trim();
+        record.note = $('.cardio-intensity', card)?.value || '';
       }
       records.push(record);
     });
